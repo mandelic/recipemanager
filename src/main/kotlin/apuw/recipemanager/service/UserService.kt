@@ -6,11 +6,11 @@ import apuw.recipemanager.controller.dto.UserDTO
 import apuw.recipemanager.entity.User
 import apuw.recipemanager.repository.UserRepository
 import apuw.recipemanager.security.SecurityUtils
-import apuw.recipemanager.service.exception.AccessDeniedCustomException
 import apuw.recipemanager.service.exception.UserExistsException
 import apuw.recipemanager.service.exception.UserNotFoundException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -23,6 +23,9 @@ class UserService(
     val passwordEncoder: PasswordEncoder,
     val securityUtils: SecurityUtils,
 ) {
+    @Value("\${myapp.jwtSecret}")
+    lateinit var jwtSecret: String
+
     fun addUser(loginRequest: LoginRequest): User {
         if (userRepository.existsByUsername(loginRequest.username))
             throw UserExistsException(loginRequest.username)
@@ -33,16 +36,14 @@ class UserService(
 
     fun getUserById(id: UUID): User {
         val user = userRepository.findById(id).orElseThrow{ UserNotFoundException(id) }
-        if (!securityUtils.isUserAllowed(user)) {
-            throw AccessDeniedCustomException()
-        }
+        securityUtils.checkUserPermission(user)
         return user
     }
 
     fun verifyLogin(loginRequest: LoginRequest): Token? {
         val user: Optional<User> = userRepository.findByUsername(loginRequest.username)
         if (user.isPresent) {
-            val userData = user.get();
+            val userData = user.get()
             if (passwordEncoder.matches(loginRequest.password, userData.password))
                 return Token(userData.role, "", userData.id);
         }
@@ -53,9 +54,7 @@ class UserService(
         val user: User = userRepository.findById(id).orElseThrow{
             UserNotFoundException(id)
         }
-        if (!securityUtils.isUserAllowed(user)) {
-            throw AccessDeniedCustomException()
-        }
+        securityUtils.checkUserPermission(user)
         user.updateData(userDTO)
         return userRepository.save(user)
     }
@@ -74,7 +73,7 @@ class UserService(
                 .map { it.authority })
             .issuedAt(Date(System.currentTimeMillis()))
             .expiration(Date(System.currentTimeMillis() + 3600000))
-            .signWith(Keys.hmacShaKeyFor("EpYawjHNtAFTSdyfbjl6HsANukbEn7JATt5D6H3xaHboXqBke9O+6muAuA6CKOxC".toByteArray()))
+            .signWith(Keys.hmacShaKeyFor(jwtSecret.toByteArray()))
             .compact()
     }
 }

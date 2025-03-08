@@ -6,12 +6,17 @@ import io.jsonwebtoken.security.Keys
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
+@Component
 class JwtAuthFilter: OncePerRequestFilter() {
+    @Value("\${myapp.jwtSecret}")
+    lateinit var jwtSecret: String
 
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -45,7 +50,7 @@ class JwtAuthFilter: OncePerRequestFilter() {
     private fun getAllClaimsFromToken(authorizationHeader: String): Claims {
         val jwtToken = authorizationHeader.replace("Bearer ", "")
         return Jwts.parser()
-            .verifyWith(Keys.hmacShaKeyFor("EpYawjHNtAFTSdyfbjl6HsANukbEn7JATt5D6H3xaHboXqBke9O+6muAuA6CKOxC".toByteArray()))
+            .verifyWith(Keys.hmacShaKeyFor(jwtSecret.toByteArray()))
             .build()
             .parseSignedClaims(jwtToken)
             .payload

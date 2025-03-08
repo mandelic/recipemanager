@@ -6,7 +6,6 @@ import apuw.recipemanager.entity.Component
 import apuw.recipemanager.entity.Recipe
 import apuw.recipemanager.repository.RecipeRepository
 import apuw.recipemanager.security.SecurityUtils
-import apuw.recipemanager.service.exception.AccessDeniedCustomException
 import apuw.recipemanager.service.exception.RecipeNotFoundException
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -27,9 +26,7 @@ class RecipeService(
 
     fun update(id: UUID, recipeDetailsDTO: RecipeDetailsDTO): Recipe {
         val recipe: Recipe = getRecipeById(id)
-        if (!securityUtils.isUserAllowed(recipe.createdBy)) {
-            throw AccessDeniedCustomException()
-        }
+        securityUtils.checkUserPermission(recipe.createdBy)
         recipe.updateData(recipeDetailsDTO)
         recipe.updatedAt = LocalDateTime.now()
         return recipeRepository.save(recipe)
@@ -37,17 +34,13 @@ class RecipeService(
 
     fun delete(id: UUID) {
         val recipe = getRecipeById(id)
-        if (!securityUtils.isUserAllowed(recipe.createdBy)) {
-            throw AccessDeniedCustomException()
-        }
+        securityUtils.checkUserPermission(recipe.createdBy)
         recipeRepository.deleteById(id)
     }
 
     fun addRecipeComponent(id: UUID, componentDTO: ComponentDTO): Recipe {
         val recipe: Recipe = getRecipeById(id)
-        if (!securityUtils.isUserAllowed(recipe.createdBy)) {
-            throw AccessDeniedCustomException()
-        }
+        securityUtils.checkUserPermission(recipe.createdBy)
         val component = Component(componentDTO, recipe)
         recipe.components.add(component)
         recipe.updatedAt = LocalDateTime.now()

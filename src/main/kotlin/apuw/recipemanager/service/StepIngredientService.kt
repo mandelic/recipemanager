@@ -3,7 +3,6 @@ package apuw.recipemanager.service
 import apuw.recipemanager.repository.IngredientRepository
 import apuw.recipemanager.repository.StepRepository
 import apuw.recipemanager.security.SecurityUtils
-import apuw.recipemanager.service.exception.AccessDeniedCustomException
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -17,9 +16,7 @@ class StepIngredientService(
         val ingredient = ingredientRepository.findById(id).orElseThrow {
             Exception("No ingredients found for id $id")
         }
-        if (!securityUtils.isUserAllowed(ingredient.component.recipe.createdBy)) {
-            throw AccessDeniedCustomException()
-        }
+        securityUtils.checkUserPermission(ingredient.component.recipe.createdBy)
         ingredientRepository.delete(ingredient)
     }
 
@@ -27,9 +24,8 @@ class StepIngredientService(
         val step = stepRepository.findById(id).orElseThrow {
             Exception("No steps found for id $id")
         }
-        if (!securityUtils.isUserAllowed(step.component.recipe.createdBy)) {
-            throw AccessDeniedCustomException()
-        }
+        securityUtils.checkUserPermission(step.component.recipe.createdBy)
         stepRepository.delete(step)
     }
+
 }

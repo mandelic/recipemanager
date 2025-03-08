@@ -5,6 +5,7 @@ import apuw.recipemanager.repository.UserRepository
 import apuw.recipemanager.service.exception.AccessDeniedCustomException
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 @Service
 class SecurityUtils(

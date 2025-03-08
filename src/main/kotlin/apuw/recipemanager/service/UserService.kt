@@ -15,6 +15,9 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import java.util.Date
+import java.util.Optional
+import java.util.UUID
 
 @Service
 class UserService(

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
+import java.util.UUID
 
 @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 @RequestMapping
@@ -27,7 +27,9 @@ class StepIngredientController(
 ) {
     @Operation(
         summary = "Delete an Ingredient by ID",
-        description = "Deletes the ingredient with the specified ID from the system. If the ingredient exists, it will be permanently removed.",
+        description =
+            "Deletes the ingredient with the specified ID from the system. " +
+                "If the ingredient exists, it will be permanently removed.",
     )
     @DeleteMapping("$INGREDIENTS_PATH/{id}")
     fun deleteIngredient(

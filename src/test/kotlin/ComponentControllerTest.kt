@@ -3,8 +3,11 @@ package apuw.recipemanager
 import apuw.recipemanager.controller.dto.ComponentDTO
 import apuw.recipemanager.controller.dto.IngredientDTO
 import apuw.recipemanager.controller.dto.StepDTO
+import apuw.recipemanager.entity.Component
 import apuw.recipemanager.entity.Ingredient
 import apuw.recipemanager.entity.Recipe
+import apuw.recipemanager.entity.Step
+import apuw.recipemanager.entity.User
 import apuw.recipemanager.service.ComponentService
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
@@ -24,9 +27,14 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDateTime
+import java.util.UUID
 import kotlin.test.Test
 
 @SpringBootTest

@@ -9,8 +9,13 @@ import apuw.recipemanager.repository.RecipeRepository
 import apuw.recipemanager.security.SecurityUtils
 import apuw.recipemanager.service.RecipeService
 import apuw.recipemanager.service.exception.AccessDeniedCustomException
+import io.mockk.Runs
+import io.mockk.clearAllMocks
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.just
+import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
@@ -20,6 +25,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import java.time.LocalDateTime
+import java.util.Optional
 import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
@@ -103,7 +109,7 @@ class RecipeServiceTest {
     fun `update() with valid user updates recipe in repository`() {
         every { recipeRepository.findById(uuid) } returns Optional.of(mockRecipe)
         every { recipeRepository.save(any()) } returns mockRecipe
-        every { securityUtils.isUserAllowed(any()) } returns true
+        every { securityUtils.checkUserPermission(any()) } returns Unit
         val result = recipeService.update(uuid, mockRecipeDetailsDTO)
         assertEquals(mockRecipe, result)
         verify { recipeRepository.findById(uuid) }
@@ -114,7 +120,7 @@ class RecipeServiceTest {
     fun `update() with invalid user throws access denied exception`() {
         every { recipeRepository.findById(uuid) } returns Optional.of(mockRecipe)
         every { recipeRepository.save(any()) } returns mockRecipe
-        every { securityUtils.isUserAllowed(any()) } returns false
+        every { securityUtils.checkUserPermission(any()) } throws AccessDeniedCustomException()
         assertThrows(AccessDeniedCustomException::class.java) {
             recipeService.update(uuid, mockRecipeDetailsDTO)
         }
@@ -124,7 +130,7 @@ class RecipeServiceTest {
     fun `delete() with valid user deletes recipe in repository`() {
         every { recipeRepository.findById(uuid) } returns Optional.of(mockRecipe)
         every { recipeRepository.deleteById(any()) } just Runs
-        every { securityUtils.isUserAllowed(any()) } returns true
+        every { securityUtils.checkUserPermission(any()) } returns Unit
         recipeService.delete(uuid)
         verify { recipeRepository.deleteById(uuid) }
     }
@@ -133,7 +139,7 @@ class RecipeServiceTest {
     fun `addRecipeComponent() with valid adds component to recipe`() {
         every { recipeRepository.findById(uuid) } returns Optional.of(mockRecipe)
         every { recipeRepository.save(any()) } returns mockRecipe
-        every { securityUtils.isUserAllowed(any()) } returns true
+        every { securityUtils.checkUserPermission(any()) } returns Unit
         val recipe = recipeService.addRecipeComponent(uuid, ComponentDTO(mockComponent))
         assert(recipe == mockRecipe)
         verify { recipeRepository.findById(uuid) }

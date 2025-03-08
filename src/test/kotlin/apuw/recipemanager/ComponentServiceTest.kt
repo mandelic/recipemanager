@@ -3,16 +3,22 @@ package apuw.recipemanager.apuw.recipemanager
 import apuw.recipemanager.controller.dto.ComponentDTO
 import apuw.recipemanager.controller.dto.IngredientDTO
 import apuw.recipemanager.controller.dto.StepDTO
+import apuw.recipemanager.entity.Component
 import apuw.recipemanager.entity.Ingredient
 import apuw.recipemanager.entity.Recipe
+import apuw.recipemanager.entity.Step
+import apuw.recipemanager.entity.User
 import apuw.recipemanager.repository.ComponentRepository
 import apuw.recipemanager.security.SecurityUtils
 import apuw.recipemanager.service.ComponentService
 import apuw.recipemanager.service.RecipeService
+import io.mockk.Runs
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.just
+import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -21,6 +27,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import java.time.LocalDateTime
+import java.util.Optional
 import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
@@ -87,7 +94,7 @@ class ComponentServiceTest {
     fun `update() with valid user updates component in repository`() {
         every { componentRepository.findById(uuid) } returns Optional.of(mockComponent)
         every { componentRepository.save(any()) } returns mockComponent
-        every { securityUtils.isUserAllowed(any()) } returns true
+        every { securityUtils.checkUserPermission(any()) } returns Unit
         every { recipeService.updateDates(any()) } just Runs
         val result = componentService.update(uuid, ComponentDTO(mockComponent))
         assertEquals(mockComponent, result)
@@ -99,7 +106,7 @@ class ComponentServiceTest {
     fun `delete() with valid user deletes component in repository`() {
         every { componentRepository.findById(uuid) } returns Optional.of(mockComponent)
         every { componentRepository.deleteById(any()) } just Runs
-        every { securityUtils.isUserAllowed(any()) } returns true
+        every { securityUtils.checkUserPermission(any()) } returns Unit
         every { recipeService.updateDates(any()) } just Runs
         componentService.delete(uuid)
         verify { componentRepository.deleteById(uuid) }
@@ -109,7 +116,7 @@ class ComponentServiceTest {
     fun `addComponentStep() with valid user adds step to component`() {
         every { componentRepository.findById(uuid) } returns Optional.of(mockComponent)
         every { componentRepository.save(any()) } returns mockComponent
-        every { securityUtils.isUserAllowed(any()) } returns true
+        every { securityUtils.checkUserPermission(any()) } returns Unit
         every { recipeService.updateDates(any()) } just Runs
         val component = componentService.addComponentStep(uuid, StepDTO(mockStep))
         val mockComponentAdded = mockComponent
@@ -122,7 +129,7 @@ class ComponentServiceTest {
     fun `addComponentIngredient() with valid user adds ingredient to component`() {
         every { componentRepository.findById(uuid) } returns Optional.of(mockComponent)
         every { componentRepository.save(any()) } returns mockComponent
-        every { securityUtils.isUserAllowed(any()) } returns true
+        every { securityUtils.checkUserPermission(any()) } returns Unit
         every { recipeService.updateDates(any()) } just Runs
         val component = componentService.addComponentIngredient(uuid, IngredientDTO(mockIngredient))
         val mockComponentAdded = mockComponent

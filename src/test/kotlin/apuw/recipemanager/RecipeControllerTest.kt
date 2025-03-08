@@ -28,10 +28,15 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDateTime
+import java.util.UUID
 import kotlin.test.Test
 
 @SpringBootTest
@@ -135,7 +140,7 @@ class RecipeControllerTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(getMockRecipeDetailsJson()),
             ).andExpect(status().isCreated)
-            .andExpect(content().string(uuid.toString()))
+            .andExpect(content().json(getMockRecipeDetailsJson()))
     }
 
     @Test

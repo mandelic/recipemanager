@@ -3,12 +3,15 @@ name: Run Ktlint and Tests
 on:
   pull_request:
     paths:
-      - '*'
+      - '**/*.kt'
+      - '**/*.kts'
   push:
     branches:
       - main
     paths:
-      - '*'
+      - '**/*.kt'
+      - '**/*.kts'
+  workflow_dispatch:
 
 jobs:
   ktlint_and_tests:

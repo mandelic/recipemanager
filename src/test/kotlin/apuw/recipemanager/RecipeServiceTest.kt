@@ -9,7 +9,6 @@ import apuw.recipemanager.repository.RecipeRepository
 import apuw.recipemanager.security.SecurityUtils
 import apuw.recipemanager.service.RecipeService
 import apuw.recipemanager.service.exception.AccessDeniedCustomException
-import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -21,7 +20,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
 class RecipeServiceTest {
@@ -46,25 +45,29 @@ class RecipeServiceTest {
     fun setUp() {
         clearAllMocks()
         recipeService = RecipeService(recipeRepository, securityUtils)
-        val authentication = UsernamePasswordAuthenticationToken(
-            uuid.toString(),
-            "password",
-            listOf(SimpleGrantedAuthority("ROLE_USER"))
-        )
+        val authentication =
+            UsernamePasswordAuthenticationToken(
+                uuid.toString(),
+                "password",
+                listOf(SimpleGrantedAuthority("ROLE_USER")),
+            )
 
         SecurityContextHolder.getContext().authentication = authentication
 
         mockRecipe =
-            Recipe(uuid, "", "",
-                LocalDateTime.of(2024, 12, 18, 22, 0,4),
-                LocalDateTime.of(2024, 12, 18, 22, 0,4), mutableListOf(), mockUser)
+            Recipe(
+                uuid, "", "",
+                LocalDateTime.of(2024, 12, 18, 22, 0, 4),
+                LocalDateTime.of(2024, 12, 18, 22, 0, 4), mutableListOf(), mockUser,
+            )
 
         mockComponent = Component(uuid, "", mockRecipe, mutableListOf(), mutableListOf())
         otherMockComponent = Component(uuidOther, "", mockRecipe, mutableListOf(), mutableListOf())
         mockRecipe.components.add(mockComponent)
-        mockRecipeList = mutableListOf(
-            mockRecipe
-        )
+        mockRecipeList =
+            mutableListOf(
+                mockRecipe,
+            )
 
         mockRecipeDetailsDTO = RecipeDetailsDTO(mockRecipe)
     }

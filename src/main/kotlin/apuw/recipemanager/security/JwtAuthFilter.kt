@@ -14,14 +14,14 @@ import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
-class JwtAuthFilter: OncePerRequestFilter() {
+class JwtAuthFilter : OncePerRequestFilter() {
     @Value("\${myapp.jwtSecret}")
     lateinit var jwtSecret: String
 
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        filterChain: FilterChain
+        filterChain: FilterChain,
     ) {
         val authorizationHeader = request.getHeader("Authorization")
 
@@ -30,11 +30,12 @@ class JwtAuthFilter: OncePerRequestFilter() {
                 val claims = getAllClaimsFromToken(authorizationHeader)
                 val authorities = (claims["authorities"] as? List<String>)?.map { SimpleGrantedAuthority(it) } ?: emptyList()
 
-                val auth = UsernamePasswordAuthenticationToken(
-                    claims.subject,
-                    null,
-                    authorities
-                )
+                val auth =
+                    UsernamePasswordAuthenticationToken(
+                        claims.subject,
+                        null,
+                        authorities,
+                    )
                 SecurityContextHolder.getContext().authentication = auth
             } catch (e: Exception) {
                 logger.warn("JWT validation failed: ${e.message}")
@@ -55,6 +56,4 @@ class JwtAuthFilter: OncePerRequestFilter() {
             .parseSignedClaims(jwtToken)
             .payload
     }
-
-
 }

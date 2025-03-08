@@ -20,11 +20,12 @@ class RecipeService(
 
     fun getRecipeById(id: UUID): Recipe = recipeRepository.findById(id).orElseThrow { RecipeNotFoundException(id) }
 
-    fun save(recipeDetailsDTO: RecipeDetailsDTO): Recipe =
-        recipeRepository.save(Recipe(recipeDetailsDTO, securityUtils.getCurrentUser()))
+    fun save(recipeDetailsDTO: RecipeDetailsDTO): Recipe = recipeRepository.save(Recipe(recipeDetailsDTO, securityUtils.getCurrentUser()))
 
-
-    fun update(id: UUID, recipeDetailsDTO: RecipeDetailsDTO): Recipe {
+    fun update(
+        id: UUID,
+        recipeDetailsDTO: RecipeDetailsDTO,
+    ): Recipe {
         val recipe: Recipe = getRecipeById(id)
         securityUtils.checkUserPermission(recipe.createdBy)
         recipe.updateData(recipeDetailsDTO)
@@ -38,7 +39,10 @@ class RecipeService(
         recipeRepository.deleteById(id)
     }
 
-    fun addRecipeComponent(id: UUID, componentDTO: ComponentDTO): Recipe {
+    fun addRecipeComponent(
+        id: UUID,
+        componentDTO: ComponentDTO,
+    ): Recipe {
         val recipe: Recipe = getRecipeById(id)
         securityUtils.checkUserPermission(recipe.createdBy)
         val component = Component(componentDTO, recipe)

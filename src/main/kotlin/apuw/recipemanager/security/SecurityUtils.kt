@@ -9,8 +9,7 @@ import java.util.*
 
 @Service
 class SecurityUtils(private val userRepository: UserRepository) {
-
-    fun getCurrentUser() : User {
+    fun getCurrentUser(): User {
         val authentication = SecurityContextHolder.getContext().authentication
         return userRepository.findById(UUID.fromString(authentication.name)).orElseThrow {
             Exception("User not found.")
@@ -27,5 +26,4 @@ class SecurityUtils(private val userRepository: UserRepository) {
             throw AccessDeniedCustomException()
         }
     }
-
 }

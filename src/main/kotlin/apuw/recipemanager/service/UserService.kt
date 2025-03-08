@@ -27,15 +27,16 @@ class UserService(
     lateinit var jwtSecret: String
 
     fun addUser(loginRequest: LoginRequest): User {
-        if (userRepository.existsByUsername(loginRequest.username))
+        if (userRepository.existsByUsername(loginRequest.username)) {
             throw UserExistsException(loginRequest.username)
+        }
         return userRepository.save(loginRequest.toUser(passwordEncoder.encode(loginRequest.password)))
     }
 
     fun getAllUsers(): List<User> = userRepository.findAll()
 
     fun getUserById(id: UUID): User {
-        val user = userRepository.findById(id).orElseThrow{ UserNotFoundException(id) }
+        val user = userRepository.findById(id).orElseThrow { UserNotFoundException(id) }
         securityUtils.checkUserPermission(user)
         return user
     }
@@ -44,16 +45,21 @@ class UserService(
         val user: Optional<User> = userRepository.findByUsername(loginRequest.username)
         if (user.isPresent) {
             val userData = user.get()
-            if (passwordEncoder.matches(loginRequest.password, userData.password))
-                return Token(userData.role, "", userData.id);
+            if (passwordEncoder.matches(loginRequest.password, userData.password)) {
+                return Token(userData.role, "", userData.id)
+            }
         }
         return null
     }
 
-    fun updateUser(id: UUID, userDTO: UserDTO): User {
-        val user: User = userRepository.findById(id).orElseThrow{
-            UserNotFoundException(id)
-        }
+    fun updateUser(
+        id: UUID,
+        userDTO: UserDTO,
+    ): User {
+        val user: User =
+            userRepository.findById(id).orElseThrow {
+                UserNotFoundException(id)
+            }
         securityUtils.checkUserPermission(user)
         user.updateData(userDTO)
         return userRepository.save(user)
@@ -63,14 +69,17 @@ class UserService(
 
     fun getJwtToken(
         userId: UUID,
-        role: String
+        role: String,
     ): String {
         val grantedAuthorities: List<GrantedAuthority> = AuthorityUtils.commaSeparatedStringToAuthorityList(role)
         return Jwts.builder()
             .id("recipesManagerJWT")
             .subject(userId.toString())
-            .claim("authorities", grantedAuthorities
-                .map { it.authority })
+            .claim(
+                "authorities",
+                grantedAuthorities
+                    .map { it.authority },
+            )
             .issuedAt(Date(System.currentTimeMillis()))
             .expiration(Date(System.currentTimeMillis() + 3600000))
             .signWith(Keys.hmacShaKeyFor(jwtSecret.toByteArray()))

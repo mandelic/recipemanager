@@ -8,10 +8,10 @@ import java.security.SecureRandom
 
 @SpringBootApplication
 class RecipeManagerApplication {
-	@Bean
-	fun passwordEncoder() = BCryptPasswordEncoder(11, SecureRandom())
+    @Bean
+    fun passwordEncoder() = BCryptPasswordEncoder(11, SecureRandom())
 }
 
 fun main(args: Array<String>) {
-	runApplication<RecipeManagerApplication>(*args)
+    runApplication<RecipeManagerApplication>(*args)
 }

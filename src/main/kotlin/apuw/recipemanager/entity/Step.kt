@@ -8,7 +8,7 @@ import jakarta.persistence.ManyToOne
 import java.util.*
 
 @Entity
-class Step (
+class Step(
     @Id
     val id: UUID = UUID.randomUUID(),
     val stepNumber: Int,

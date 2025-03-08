@@ -8,7 +8,7 @@ import jakarta.persistence.ManyToOne
 import java.util.*
 
 @Entity
-class Ingredient (
+class Ingredient(
     @Id
     val id: UUID = UUID.randomUUID(),
     val name: String,

@@ -3,12 +3,14 @@ package apuw.recipemanager.apuw.recipemanager
 import apuw.recipemanager.controller.dto.ComponentDTO
 import apuw.recipemanager.controller.dto.IngredientDTO
 import apuw.recipemanager.controller.dto.StepDTO
-import apuw.recipemanager.entity.*
+import apuw.recipemanager.entity.Ingredient
+import apuw.recipemanager.entity.Recipe
 import apuw.recipemanager.repository.ComponentRepository
 import apuw.recipemanager.security.SecurityUtils
 import apuw.recipemanager.service.ComponentService
 import apuw.recipemanager.service.RecipeService
-import io.mockk.*
+import io.mockk.clearAllMocks
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -19,7 +21,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
 class ComponentServiceTest {
@@ -47,18 +49,25 @@ class ComponentServiceTest {
     fun setUp() {
         clearAllMocks()
         componentService = ComponentService(componentRepository, recipeService, securityUtils)
-        val authentication = UsernamePasswordAuthenticationToken(
-            uuid.toString(),
-            "password",
-            listOf(SimpleGrantedAuthority("ROLE_USER"))
-        )
+        val authentication =
+            UsernamePasswordAuthenticationToken(
+                uuid.toString(),
+                "password",
+                listOf(SimpleGrantedAuthority("ROLE_USER")),
+            )
 
         SecurityContextHolder.getContext().authentication = authentication
 
         val mockRecipe =
-            Recipe(uuid, "", "",
-                LocalDateTime.of(2024, 12, 18, 22, 0,4),
-                LocalDateTime.of(2024, 12, 18, 22, 0,4), mutableListOf(), mockUser)
+            Recipe(
+                uuid,
+                "",
+                "",
+                LocalDateTime.of(2024, 12, 18, 22, 0, 4),
+                LocalDateTime.of(2024, 12, 18, 22, 0, 4),
+                mutableListOf(),
+                mockUser,
+            )
 
         mockComponent = Component(uuid, "", mockRecipe, mutableListOf(), mutableListOf())
         mockIngredient = Ingredient(uuid, "", 1F, "", mockComponent)
@@ -121,6 +130,4 @@ class ComponentServiceTest {
         assertEquals(mockComponentAdded, component)
         verify { componentRepository.save(any()) }
     }
-
-
 }

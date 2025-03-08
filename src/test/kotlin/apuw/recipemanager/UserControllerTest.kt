@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import java.util.*
+import java.util.UUID
 import kotlin.test.Test
 
 @SpringBootTest
@@ -25,11 +25,12 @@ class UserControllerTest {
     var userService: UserService = mockk()
     var userRepository: UserRepository = mockk()
 
-    private final val mockUserList: List<User> = listOf(
-        User("admin", "admin", "ROLE_ADMIN"),
-        User("user1", "pass1", "ROLE_USER"),
-        User("user2", "pass2", "ROLE_USER")
-    )
+    private final val mockUserList: List<User> =
+        listOf(
+            User("admin", "admin", "ROLE_ADMIN"),
+            User("user1", "pass1", "ROLE_USER"),
+            User("user2", "pass2", "ROLE_USER"),
+        )
 
     val randomUUID: UUID = UUID.randomUUID()
 

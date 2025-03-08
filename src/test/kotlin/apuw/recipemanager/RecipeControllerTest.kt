@@ -28,16 +28,15 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDateTime
-import java.util.*
 import kotlin.test.Test
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 class RecipeControllerTest {
-
     @Autowired
     private lateinit var mockMvc: MockMvc
 
@@ -53,7 +52,6 @@ class RecipeControllerTest {
                 .registerModule(JavaTimeModule())
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
     }
-
 
     final val uuid: UUID = UUID.fromString("27277c0c-242b-46de-8193-98c56776c639")
     final val uuidUser: UUID = UUID.fromString("b925ea39-61ca-4bc2-aac0-f0d2b43238c8")
@@ -76,8 +74,10 @@ class RecipeControllerTest {
 
     fun getMockComponentListJson(): String = objectMapper.writeValueAsString(mockRecipe.components.map { ComponentDTO(it) })
 
-    fun getMockComponentAddedListJson(): String = objectMapper.writeValueAsString(
-        listOf(ComponentDTO(mockComponent), ComponentDTO(otherMockComponent)))
+    fun getMockComponentAddedListJson(): String =
+        objectMapper.writeValueAsString(
+            listOf(ComponentDTO(mockComponent), ComponentDTO(otherMockComponent)),
+        )
 
     fun getMockComponentJson(): String = objectMapper.writeValueAsString(ComponentDTO(otherMockComponent))
 
@@ -85,25 +85,29 @@ class RecipeControllerTest {
     fun setUp() {
         clearAllMocks()
 
-        val authentication = UsernamePasswordAuthenticationToken(
-            uuid.toString(),
-            "password",
-            listOf(SimpleGrantedAuthority("ROLE_USER"))
-        )
+        val authentication =
+            UsernamePasswordAuthenticationToken(
+                uuid.toString(),
+                "password",
+                listOf(SimpleGrantedAuthority("ROLE_USER")),
+            )
 
         SecurityContextHolder.getContext().authentication = authentication
 
         mockRecipe =
-            Recipe(uuid, "", "",
-                LocalDateTime.of(2024, 12, 18, 22, 0,4),
-                LocalDateTime.of(2024, 12, 18, 22, 0,4), mutableListOf(), mockUser)
+            Recipe(
+                uuid, "", "",
+                LocalDateTime.of(2024, 12, 18, 22, 0, 4),
+                LocalDateTime.of(2024, 12, 18, 22, 0, 4), mutableListOf(), mockUser,
+            )
 
         mockComponent = Component(uuid, "", mockRecipe, mutableListOf(), mutableListOf())
         otherMockComponent = Component(uuidOther, "", mockRecipe, mutableListOf(), mutableListOf())
         mockRecipe.components.add(mockComponent)
-        mockRecipeList = mutableListOf(
-            mockRecipe
-        )
+        mockRecipeList =
+            mutableListOf(
+                mockRecipe,
+            )
 
         mockRecipeDetailsDTO = RecipeDetailsDTO(mockRecipe)
     }
@@ -123,7 +127,7 @@ class RecipeControllerTest {
         mockMvc.perform(
             post("/api/recipes")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getMockRecipeDetailsJson())
+                .content(getMockRecipeDetailsJson()),
         ).andExpect(status().isCreated)
             .andExpect(content().string(uuid.toString()))
     }
@@ -164,7 +168,7 @@ class RecipeControllerTest {
         mockMvc.perform(
             put("/api/recipes/$uuid")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getMockRecipeDetailsJson())
+                .content(getMockRecipeDetailsJson()),
         ).andExpect(status().isOk)
             .andExpect(content().json(getMockRecipeDetailsJson()))
     }
@@ -177,7 +181,7 @@ class RecipeControllerTest {
         mockMvc.perform(
             put("/api/recipes/$uuid")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getMockRecipeDetailsJson())
+                .content(getMockRecipeDetailsJson()),
         ).andExpect(status().isForbidden)
             .andExpect(jsonPath("$.message").value("Access denied"))
     }
@@ -201,12 +205,9 @@ class RecipeControllerTest {
         mockMvc.perform(
             post("/api/recipes/$uuid/components")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getMockComponentJson())
+                .content(getMockComponentJson()),
         )
             .andExpect(status().isCreated)
             .andExpect(content().json(getMockComponentAddedListJson()))
     }
-
-
-
 }

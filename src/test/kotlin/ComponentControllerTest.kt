@@ -3,7 +3,8 @@ package apuw.recipemanager
 import apuw.recipemanager.controller.dto.ComponentDTO
 import apuw.recipemanager.controller.dto.IngredientDTO
 import apuw.recipemanager.controller.dto.StepDTO
-import apuw.recipemanager.entity.*
+import apuw.recipemanager.entity.Ingredient
+import apuw.recipemanager.entity.Recipe
 import apuw.recipemanager.service.ComponentService
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
@@ -23,17 +24,14 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDateTime
-import java.util.*
 import kotlin.test.Test
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 class ComponentControllerTest {
-
     @Autowired
     private lateinit var mockMvc: MockMvc
 
@@ -57,34 +55,48 @@ class ComponentControllerTest {
     private lateinit var mockStep: Step
 
     fun getMockComponentJson(): String = objectMapper.writeValueAsString(ComponentDTO(mockComponent))
-    fun getMockIngredientJson(): String = objectMapper.writeValueAsString(IngredientDTO(mockIngredient))
-    fun getMockStepJson(): String = objectMapper.writeValueAsString(StepDTO(mockStep))
-    fun getMockIngredientListJson(): String = objectMapper.writeValueAsString(listOf(IngredientDTO(mockIngredient)))
-    fun getMockStepListJson(): String = objectMapper.writeValueAsString(listOf(StepDTO(mockStep)))
-    fun getMockIngredientListNewJson(): String = objectMapper.writeValueAsString(
-        listOf(IngredientDTO(mockIngredient), IngredientDTO(mockIngredient))
-    )
-    fun getMockStepListNewJson(): String = objectMapper.writeValueAsString(
-        listOf(StepDTO(mockStep), StepDTO(mockStep))
-    )
 
+    fun getMockIngredientJson(): String = objectMapper.writeValueAsString(IngredientDTO(mockIngredient))
+
+    fun getMockStepJson(): String = objectMapper.writeValueAsString(StepDTO(mockStep))
+
+    fun getMockIngredientListJson(): String = objectMapper.writeValueAsString(listOf(IngredientDTO(mockIngredient)))
+
+    fun getMockStepListJson(): String = objectMapper.writeValueAsString(listOf(StepDTO(mockStep)))
+
+    fun getMockIngredientListNewJson(): String =
+        objectMapper.writeValueAsString(
+            listOf(IngredientDTO(mockIngredient), IngredientDTO(mockIngredient)),
+        )
+
+    fun getMockStepListNewJson(): String =
+        objectMapper.writeValueAsString(
+            listOf(StepDTO(mockStep), StepDTO(mockStep)),
+        )
 
     @BeforeEach
     fun setUp() {
         clearAllMocks()
 
-        val authentication = UsernamePasswordAuthenticationToken(
-            uuid.toString(),
-            "password",
-            listOf(SimpleGrantedAuthority("ROLE_USER"))
-        )
+        val authentication =
+            UsernamePasswordAuthenticationToken(
+                uuid.toString(),
+                "password",
+                listOf(SimpleGrantedAuthority("ROLE_USER")),
+            )
 
         SecurityContextHolder.getContext().authentication = authentication
 
         val mockRecipe =
-            Recipe(uuid, "", "",
-                LocalDateTime.of(2024, 12, 18, 22, 0,4),
-                LocalDateTime.of(2024, 12, 18, 22, 0,4), mutableListOf(), mockUser)
+            Recipe(
+                uuid,
+                "",
+                "",
+                LocalDateTime.of(2024, 12, 18, 22, 0, 4),
+                LocalDateTime.of(2024, 12, 18, 22, 0, 4),
+                mutableListOf(),
+                mockUser,
+            )
 
         mockComponent = Component(uuid, "", mockRecipe, mutableListOf(), mutableListOf())
         mockIngredient = Ingredient(uuid, "", 1F, "", mockComponent)
@@ -100,7 +112,7 @@ class ComponentControllerTest {
         mockMvc.perform(
             put("/api/components/$uuid")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getMockComponentJson())
+                .content(getMockComponentJson()),
         )
             .andExpect(status().isOk)
             .andExpect(content().json(getMockComponentJson()))
@@ -111,7 +123,7 @@ class ComponentControllerTest {
     fun `when delete component by valid user, return 204`() {
         every { componentService.delete(uuid) } just Runs
         mockMvc.perform(
-            delete("/api/components/$uuid")
+            delete("/api/components/$uuid"),
         )
             .andExpect(status().isNoContent)
             .andExpect(content().string(""))
@@ -122,7 +134,7 @@ class ComponentControllerTest {
     fun `when get all component ingredients, return 200`() {
         every { componentService.getComponentById(uuid) } returns mockComponent
         mockMvc.perform(
-            get("/api/components/$uuid/ingredients")
+            get("/api/components/$uuid/ingredients"),
         )
             .andExpect(status().isOk)
             .andExpect(content().json(getMockIngredientListJson()))
@@ -133,7 +145,7 @@ class ComponentControllerTest {
     fun `when get all component steps, return 200`() {
         every { componentService.getComponentById(uuid) } returns mockComponent
         mockMvc.perform(
-            get("/api/components/$uuid/steps")
+            get("/api/components/$uuid/steps"),
         )
             .andExpect(status().isOk)
             .andExpect(content().json(getMockStepListJson()))
@@ -149,7 +161,7 @@ class ComponentControllerTest {
         mockMvc.perform(
             post("/api/components/$uuid/ingredients")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getMockIngredientJson())
+                .content(getMockIngredientJson()),
         )
             .andExpect(status().isCreated)
             .andExpect(content().json(getMockIngredientListNewJson()))
@@ -165,7 +177,7 @@ class ComponentControllerTest {
         mockMvc.perform(
             post("/api/components/$uuid/steps")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getMockStepJson())
+                .content(getMockStepJson()),
         )
             .andExpect(status().isCreated)
             .andExpect(content().json(getMockStepListNewJson()))

@@ -5,9 +5,11 @@ import jakarta.persistence.*
 import java.util.*
 
 @Entity
-@Table(name = "users",
-    uniqueConstraints = [UniqueConstraint(columnNames = ["username"])])
-class User (
+@Table(
+    name = "users",
+    uniqueConstraints = [UniqueConstraint(columnNames = ["username"])],
+)
+class User(
     @Id
     var id: UUID = UUID.randomUUID(),
     var username: String,
@@ -18,7 +20,7 @@ class User (
         UUID.randomUUID(),
         username,
         password,
-        role
+        role,
     )
 
     fun updateData(userDTO: UserDTO) {

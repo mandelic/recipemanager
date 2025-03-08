@@ -15,7 +15,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, prePostEnabled = true)
 class SecurityConfig {
-
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http {
@@ -23,12 +22,11 @@ class SecurityConfig {
             cors { }
             addFilterAfter<UsernamePasswordAuthenticationFilter>(JwtAuthFilter())
             authorizeHttpRequests {
-                authorize(HttpMethod.POST,"/v1/login", permitAll)
+                authorize(HttpMethod.POST, "/v1/login", permitAll)
                 authorize(anyRequest, permitAll)
             }
             httpBasic { }
         }
         return http.build()
     }
-
 }

@@ -6,9 +6,8 @@ import jakarta.validation.constraints.NotBlank
 import java.time.LocalDateTime
 import java.util.*
 
-
 @Entity
-class Recipe (
+class Recipe(
     @Id
     var id: UUID = UUID.randomUUID(),
     @NotBlank
@@ -21,8 +20,8 @@ class Recipe (
     var components: MutableList<Component> = mutableListOf(),
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    var createdBy: User
-){
+    var createdBy: User,
+) {
     constructor(
         recipeDetailsDTO: RecipeDetailsDTO,
         user: User,
@@ -32,7 +31,7 @@ class Recipe (
         description = recipeDetailsDTO.description,
         createdAt = LocalDateTime.now(),
         updatedAt = LocalDateTime.now(),
-        createdBy = user
+        createdBy = user,
     ) {
         components = recipeDetailsDTO.components?.map { Component(it, this) }?.toMutableList() ?: mutableListOf()
     }

@@ -6,7 +6,7 @@ import java.util.*
 data class StepDTO(
     val id: UUID?,
     val stepNumber: Int,
-    val description: String
+    val description: String,
 ) {
     constructor(step: Step) : this(
         id = step.id,

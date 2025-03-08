@@ -20,6 +20,6 @@ data class RecipeDetailsDTO(
         createdAt = recipe.createdAt,
         updatedAt = recipe.updatedAt,
         components = recipe.components.map { ComponentDTO(it) }.toMutableList(),
-        createdBy = UserDTO(recipe.createdBy)
+        createdBy = UserDTO(recipe.createdBy),
     )
 }

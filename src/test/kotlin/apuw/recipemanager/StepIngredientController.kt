@@ -13,13 +13,12 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import java.util.*
+import java.util.UUID
 import kotlin.test.Test
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 class StepIngredientController {
-
     @Autowired
     private lateinit var mockMvc: MockMvc
 
@@ -33,7 +32,7 @@ class StepIngredientController {
     fun `when delete ingredient by valid user, return 204`() {
         every { stepIngredientService.deleteIngredientById(uuid) } just Runs
         mockMvc.perform(
-            delete("/api/ingredients/$uuid")
+            delete("/api/ingredients/$uuid"),
         )
             .andExpect(status().isNoContent)
             .andExpect(content().string(""))
@@ -44,7 +43,7 @@ class StepIngredientController {
     fun `when delete step by valid user, return 204`() {
         every { stepIngredientService.deleteStepById(uuid) } just Runs
         mockMvc.perform(
-            delete("/api/steps/$uuid")
+            delete("/api/steps/$uuid"),
         )
             .andExpect(status().isNoContent)
             .andExpect(content().string(""))

@@ -2,7 +2,7 @@ package apuw.recipemanager.controller.dto
 
 import apuw.recipemanager.entity.Recipe
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 data class RecipeDTO(
     var id: UUID?,
@@ -18,6 +18,6 @@ data class RecipeDTO(
         description = recipe.description,
         createdAt = recipe.createdAt,
         updatedAt = recipe.updatedAt,
-        createdBy = recipe.createdBy.username
+        createdBy = recipe.createdBy.username,
     )
 }

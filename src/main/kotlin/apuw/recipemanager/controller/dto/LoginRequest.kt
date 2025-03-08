@@ -7,7 +7,6 @@ data class LoginRequest(
     val password: String,
 ) {
     fun toUser(password: String): User {
-        return User(username, password, "ROLE_USER");
+        return User(username, password, "ROLE_USER")
     }
 }
-

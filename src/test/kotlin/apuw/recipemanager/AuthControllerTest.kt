@@ -19,7 +19,6 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import java.util.*
 import kotlin.test.Test
 
 @SpringBootTest
@@ -36,13 +35,15 @@ class AuthControllerTest {
     val mockAdminToken = Token("ROLE_ADMIN", "token", uuid)
     val mockLoginRequest = LoginRequest("admin", "admin")
 
-    private final val mockUserList: List<User> = listOf(
-        User(uuid, "admin", "admin", "ROLE_ADMIN"),
-        User(uuid, "user1", "pass1", "ROLE_USER"),
-        User(uuid, "user2", "pass2", "ROLE_USER")
-    )
+    private final val mockUserList: List<User> =
+        listOf(
+            User(uuid, "admin", "admin", "ROLE_ADMIN"),
+            User(uuid, "user1", "pass1", "ROLE_USER"),
+            User(uuid, "user2", "pass2", "ROLE_USER"),
+        )
 
     fun getMockAdminTokenJson() = objectMapper.writeValueAsString(mockAdminToken)
+
     fun getMockLoginRequestJson() = objectMapper.writeValueAsString(mockLoginRequest)
 
     companion object {
@@ -60,7 +61,7 @@ class AuthControllerTest {
         mockMvc.perform(
             post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getMockLoginRequestJson())
+                .content(getMockLoginRequestJson()),
         )
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -74,7 +75,7 @@ class AuthControllerTest {
         mockMvc.perform(
             post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getMockLoginRequestJson())
+                .content(getMockLoginRequestJson()),
         )
             .andExpect(status().isUnauthorized)
             .andExpect(content().string(""))
@@ -88,11 +89,10 @@ class AuthControllerTest {
         mockMvc.perform(
             post("/api/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getMockLoginRequestJson())
+                .content(getMockLoginRequestJson()),
         )
             .andExpect(status().isCreated)
             .andExpect(content().contentType(MediaType.valueOf("text/plain;charset=UTF-8")))
             .andExpect(content().string(mockUserList[0].id.toString()))
     }
-
 }

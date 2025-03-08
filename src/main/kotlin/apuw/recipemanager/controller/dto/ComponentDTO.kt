@@ -7,7 +7,7 @@ data class ComponentDTO(
     val id: UUID?,
     val name: String,
     val ingredients: MutableList<IngredientDTO>?,
-    val steps: MutableList<StepDTO>?
+    val steps: MutableList<StepDTO>?,
 ) {
     constructor(component: Component) : this(
         id = component.id,

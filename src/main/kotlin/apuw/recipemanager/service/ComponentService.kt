@@ -16,12 +16,14 @@ import java.util.*
 class ComponentService(
     val componentRepository: ComponentRepository,
     val recipeService: RecipeService,
-    val securityUtils: SecurityUtils
+    val securityUtils: SecurityUtils,
 ) {
-
     fun getComponentById(id: UUID): Component = getComponentByIdOrThrow(id)
 
-    fun update(id: UUID, componentDTO: ComponentDTO): Component {
+    fun update(
+        id: UUID,
+        componentDTO: ComponentDTO,
+    ): Component {
         val component: Component = getComponentById(id)
         securityUtils.checkUserPermission(component.recipe.createdBy)
         component.updateData(componentDTO)
@@ -36,7 +38,10 @@ class ComponentService(
         updateRecipeDates(component)
     }
 
-    fun addComponentStep(id: UUID, stepDTO: StepDTO): Component {
+    fun addComponentStep(
+        id: UUID,
+        stepDTO: StepDTO,
+    ): Component {
         val component: Component = getComponentById(id)
         securityUtils.checkUserPermission(component.recipe.createdBy)
         val step = Step(stepDTO, component)
@@ -45,7 +50,10 @@ class ComponentService(
         return componentRepository.save(component)
     }
 
-    fun addComponentIngredient(id: UUID, ingredientDTO: IngredientDTO): Component {
+    fun addComponentIngredient(
+        id: UUID,
+        ingredientDTO: IngredientDTO,
+    ): Component {
         val component: Component = getComponentById(id)
         securityUtils.checkUserPermission(component.recipe.createdBy)
         val ingredient = Ingredient(ingredientDTO, component)
@@ -58,7 +66,6 @@ class ComponentService(
         return componentRepository.findById(id)
             .orElseThrow { throw ComponentNotFoundException(id) }
     }
-
 
     private fun updateRecipeDates(component: Component) {
         recipeService.updateDates(component.recipe.id)

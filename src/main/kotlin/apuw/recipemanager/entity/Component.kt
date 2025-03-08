@@ -5,7 +5,7 @@ import jakarta.persistence.*
 import java.util.*
 
 @Entity
-class Component (
+class Component(
     @Id
     val id: UUID = UUID.randomUUID(),
     var name: String,
@@ -21,7 +21,7 @@ class Component (
         id = UUID.randomUUID(),
         recipe = recipe,
         name = componentDTO.name,
-    ){
+    ) {
         ingredients = componentDTO.ingredients?.map { Ingredient(it, this) }?.toMutableList() ?: mutableListOf()
         steps = componentDTO.steps?.map { Step(it, this) }?.toMutableList() ?: mutableListOf()
     }

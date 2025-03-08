@@ -15,42 +15,46 @@ import java.util.*
 @RestController
 @Tag(
     name = "User Management",
-    description = "Endpoints for managing user accounts, including retrieving, updating," +
-            "and deleting user information."
+    description =
+        "Endpoints for managing user accounts, including retrieving, updating," +
+            "and deleting user information.",
 )
 class UserController(private val userService: UserService) {
-
     @Operation(
         summary = "Get All Users",
-        description = "Retrieves a list of all users in the system. Only available to users with ROLE_ADMIN."
+        description = "Retrieves a list of all users in the system. Only available to users with ROLE_ADMIN.",
     )
     @GetMapping
     fun listUsers(): ResponseEntity<List<UserDTO>> {
-        val userList: List<UserDTO> = userService.getAllUsers().map{ UserDTO(it) }
+        val userList: List<UserDTO> = userService.getAllUsers().map { UserDTO(it) }
         return ResponseEntity.ok(userList)
     }
 
     @Operation(
         summary = "Get User by ID",
-        description = "Fetches a user by their unique ID. The user must be authenticated with either the 'ADMIN' or 'USER'" +
-                " role to access this endpoint."
+        description =
+            "Fetches a user by their unique ID. The user must be authenticated with either the 'ADMIN' or 'USER'" +
+                " role to access this endpoint.",
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{id}")
-    fun findUserById(@PathVariable id: UUID): ResponseEntity<UserDTO> {
+    fun findUserById(
+        @PathVariable id: UUID,
+    ): ResponseEntity<UserDTO> {
         return ResponseEntity.ok(UserDTO(userService.getUserById(id)))
     }
 
     @Operation(
         summary = "Update User by ID",
-        description = "Updates the user with the given ID. The user must be authenticated with either the 'ADMIN' or " +
-                "'USER' role to access this endpoint. The request body should contain the user data to be updated."
+        description =
+            "Updates the user with the given ID. The user must be authenticated with either the 'ADMIN' or " +
+                "'USER' role to access this endpoint. The request body should contain the user data to be updated.",
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PutMapping("/{id}")
     fun updateUser(
         @PathVariable id: UUID,
-        @RequestBody userDTO: UserDTO
+        @RequestBody userDTO: UserDTO,
     ): ResponseEntity<UserDTO> {
         val updatedUser = userService.updateUser(id, userDTO)
         return ResponseEntity.ok(UserDTO(updatedUser))
@@ -58,10 +62,12 @@ class UserController(private val userService: UserService) {
 
     @Operation(
         summary = "Delete User by ID",
-        description = "Deletes the user with the specified ID. Only users with the 'ADMIN' role can delete an account."
+        description = "Deletes the user with the specified ID. Only users with the 'ADMIN' role can delete an account.",
     )
     @DeleteMapping("/{id}")
-    fun deleteUser(@PathVariable id: UUID): ResponseEntity<Void> {
+    fun deleteUser(
+        @PathVariable id: UUID,
+    ): ResponseEntity<Void> {
         userService.deleteUser(id)
         return ResponseEntity.noContent().build()
     }

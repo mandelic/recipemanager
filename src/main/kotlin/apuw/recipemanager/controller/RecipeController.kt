@@ -4,16 +4,17 @@ import apuw.recipemanager.controller.dto.ComponentDTO
 import apuw.recipemanager.controller.dto.RecipeDTO
 import apuw.recipemanager.controller.dto.RecipeDetailsDTO
 import apuw.recipemanager.service.RecipeService
+import apuw.recipemanager.util.Paths.RECIPES_PATH
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import java.net.URI
 import java.util.*
 
 @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-@RequestMapping("/api/recipes")
+@RequestMapping(RECIPES_PATH)
 @RestController
 @Tag(
     name = "Recipes Management",
@@ -32,7 +33,7 @@ class RecipeController(
     @GetMapping
     fun getRecipes(): ResponseEntity<List<RecipeDTO>> {
         val recipeList: List<RecipeDTO> = recipeService.getAllRecipes().map{ RecipeDTO(it) }
-        return ResponseEntity(recipeList, HttpStatus.OK)
+        return ResponseEntity.ok(recipeList)
     }
 
     @Operation(
@@ -42,9 +43,9 @@ class RecipeController(
                 "The response will return the ID of the newly created recipe."
     )
     @PostMapping
-    fun addRecipe(@RequestBody recipeDetailsDTO: RecipeDetailsDTO): ResponseEntity<String> {
+    fun addRecipe(@RequestBody recipeDetailsDTO: RecipeDetailsDTO): ResponseEntity<RecipeDetailsDTO> {
         val recipe = recipeService.save(recipeDetailsDTO)
-        return ResponseEntity(recipe.id.toString(), HttpStatus.CREATED)
+        return ResponseEntity.created(URI.create("/api/recipes/${recipe.id}")).body(RecipeDetailsDTO(recipe))
     }
 
     @Operation(
@@ -54,7 +55,8 @@ class RecipeController(
     )
     @GetMapping("/{id}")
     fun getRecipe(@PathVariable id: UUID): ResponseEntity<RecipeDetailsDTO> {
-        return ResponseEntity(RecipeDetailsDTO(recipeService.getRecipeById(id)), HttpStatus.OK)
+        val recipe = recipeService.getRecipeById(id)
+        return ResponseEntity.ok(RecipeDetailsDTO(recipe))
     }
 
     @Operation(
@@ -69,7 +71,7 @@ class RecipeController(
         @RequestBody recipeDetailsDTO: RecipeDetailsDTO
     ): ResponseEntity<RecipeDetailsDTO> {
         val updatedRecipe = recipeService.update(id, recipeDetailsDTO)
-        return ResponseEntity(RecipeDetailsDTO(updatedRecipe), HttpStatus.OK)
+        return ResponseEntity.ok(RecipeDetailsDTO(updatedRecipe))
     }
 
     @Operation(
@@ -80,7 +82,7 @@ class RecipeController(
     @DeleteMapping("/{id}")
     fun deleteRecipe(@PathVariable id: UUID): ResponseEntity<Void> {
         recipeService.delete(id)
-        return ResponseEntity(HttpStatus.NO_CONTENT)
+        return ResponseEntity.noContent().build()
     }
 
     @Operation(
@@ -90,7 +92,7 @@ class RecipeController(
     @GetMapping("/{id}/components")
     fun getRecipeComponents(@PathVariable id: UUID): ResponseEntity<List<ComponentDTO>> {
         val recipe = recipeService.getRecipeById(id)
-        return ResponseEntity(recipe.components.map { ComponentDTO(it) }, HttpStatus.OK)
+        return ResponseEntity.ok(recipe.components.map { ComponentDTO(it) })
     }
 
     @Operation(
@@ -103,6 +105,6 @@ class RecipeController(
         @RequestBody componentDTO: ComponentDTO
     ): ResponseEntity<List<ComponentDTO>> {
         val recipe = recipeService.addRecipeComponent(id, componentDTO)
-        return ResponseEntity(recipe.components.map { ComponentDTO(it) }, HttpStatus.CREATED)
+        return ResponseEntity.created(URI.create("/api/recipes/$id/components")).body(recipe.components.map { ComponentDTO(it) })
     }
 }

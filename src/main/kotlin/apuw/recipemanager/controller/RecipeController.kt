@@ -9,7 +9,14 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 import java.net.URI
 import java.util.UUID
 
@@ -98,7 +105,9 @@ class RecipeController(
 
     @Operation(
         summary = "Get Components of a Recipe",
-        description = "Retrieves the list of components for a recipe by its ID. The components are returned as a list of `ComponentDTO` objects.",
+        description =
+            "Retrieves the list of components for a recipe by its ID. " +
+                "The components are returned as a list of `ComponentDTO` objects.",
     )
     @GetMapping("/{id}/components")
     fun getRecipeComponents(
@@ -110,7 +119,9 @@ class RecipeController(
 
     @Operation(
         summary = "Add a Component to a Recipe",
-        description = "Adds a new component to a recipe specified by its ID. The component is passed as a `ComponentDTO` object and will be added to the recipe's component list.",
+        description =
+            "Adds a new component to a recipe specified by its ID. " +
+                "The component is passed as a `ComponentDTO` object and will be added to the recipe's component list.",
     )
     @PostMapping("/{id}/components")
     fun addRecipeComponent(

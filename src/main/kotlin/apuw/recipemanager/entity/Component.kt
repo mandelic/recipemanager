@@ -1,8 +1,11 @@
 package apuw.recipemanager.entity
 
 import apuw.recipemanager.controller.dto.ComponentDTO
-import jakarta.persistence.*
-import java.util.*
+import jakarta.persistence.Entity
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToMany
+import java.util.UUID
 
 @Entity
 class Component(

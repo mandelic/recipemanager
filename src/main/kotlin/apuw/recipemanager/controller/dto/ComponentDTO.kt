@@ -1,7 +1,7 @@
 package apuw.recipemanager.controller.dto
 
 import apuw.recipemanager.entity.Component
-import java.util.*
+import java.util.UUID
 
 data class ComponentDTO(
     val id: UUID?,

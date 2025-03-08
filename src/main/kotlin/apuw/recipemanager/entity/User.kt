@@ -1,8 +1,9 @@
 package apuw.recipemanager.entity
 
 import apuw.recipemanager.controller.dto.UserDTO
-import jakarta.persistence.*
-import java.util.*
+import jakarta.persistence.Entity
+import jakarta.persistence.UniqueConstraint
+import java.util.UUID
 
 @Entity
 @Table(

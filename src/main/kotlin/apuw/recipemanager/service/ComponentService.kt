@@ -10,7 +10,7 @@ import apuw.recipemanager.repository.ComponentRepository
 import apuw.recipemanager.security.SecurityUtils
 import apuw.recipemanager.service.exception.ComponentNotFoundException
 import org.springframework.stereotype.Service
-import java.util.*
+import java.util.UUID
 
 @Service
 class ComponentService(
@@ -62,10 +62,10 @@ class ComponentService(
         return componentRepository.save(component)
     }
 
-    private fun getComponentByIdOrThrow(id: UUID): Component {
-        return componentRepository.findById(id)
+    private fun getComponentByIdOrThrow(id: UUID): Component =
+        componentRepository
+            .findById(id)
             .orElseThrow { throw ComponentNotFoundException(id) }
-    }
 
     private fun updateRecipeDates(component: Component) {
         recipeService.updateDates(component.recipe.id)

@@ -1,10 +1,14 @@
 package apuw.recipemanager.entity
 
 import apuw.recipemanager.controller.dto.RecipeDetailsDTO
-import jakarta.persistence.*
+import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToMany
 import jakarta.validation.constraints.NotBlank
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 @Entity
 class Recipe(

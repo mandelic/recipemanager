@@ -109,12 +109,12 @@ class ComponentControllerTest {
     @WithMockUser(username = "user", roles = ["USER"])
     fun `when update component by valid user, return 200`() {
         every { componentService.update(uuid, ComponentDTO(mockComponent)) } returns mockComponent
-        mockMvc.perform(
-            put("/api/components/$uuid")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getMockComponentJson()),
-        )
-            .andExpect(status().isOk)
+        mockMvc
+            .perform(
+                put("/api/components/$uuid")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(getMockComponentJson()),
+            ).andExpect(status().isOk)
             .andExpect(content().json(getMockComponentJson()))
     }
 
@@ -122,10 +122,10 @@ class ComponentControllerTest {
     @WithMockUser(username = "user", roles = ["USER"])
     fun `when delete component by valid user, return 204`() {
         every { componentService.delete(uuid) } just Runs
-        mockMvc.perform(
-            delete("/api/components/$uuid"),
-        )
-            .andExpect(status().isNoContent)
+        mockMvc
+            .perform(
+                delete("/api/components/$uuid"),
+            ).andExpect(status().isNoContent)
             .andExpect(content().string(""))
     }
 
@@ -133,10 +133,10 @@ class ComponentControllerTest {
     @WithMockUser(username = "user", roles = ["USER"])
     fun `when get all component ingredients, return 200`() {
         every { componentService.getComponentById(uuid) } returns mockComponent
-        mockMvc.perform(
-            get("/api/components/$uuid/ingredients"),
-        )
-            .andExpect(status().isOk)
+        mockMvc
+            .perform(
+                get("/api/components/$uuid/ingredients"),
+            ).andExpect(status().isOk)
             .andExpect(content().json(getMockIngredientListJson()))
     }
 
@@ -144,10 +144,10 @@ class ComponentControllerTest {
     @WithMockUser(username = "user", roles = ["USER"])
     fun `when get all component steps, return 200`() {
         every { componentService.getComponentById(uuid) } returns mockComponent
-        mockMvc.perform(
-            get("/api/components/$uuid/steps"),
-        )
-            .andExpect(status().isOk)
+        mockMvc
+            .perform(
+                get("/api/components/$uuid/steps"),
+            ).andExpect(status().isOk)
             .andExpect(content().json(getMockStepListJson()))
     }
 
@@ -158,12 +158,12 @@ class ComponentControllerTest {
         mockComponentWithAddedIngr.ingredients.add(mockIngredient)
         every { componentService.getComponentById(uuid) } returns mockComponent
         every { componentService.addComponentIngredient(uuid, IngredientDTO(mockIngredient)) } returns mockComponentWithAddedIngr
-        mockMvc.perform(
-            post("/api/components/$uuid/ingredients")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getMockIngredientJson()),
-        )
-            .andExpect(status().isCreated)
+        mockMvc
+            .perform(
+                post("/api/components/$uuid/ingredients")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(getMockIngredientJson()),
+            ).andExpect(status().isCreated)
             .andExpect(content().json(getMockIngredientListNewJson()))
     }
 
@@ -174,12 +174,12 @@ class ComponentControllerTest {
         mockComponentWithAddedStep.steps.add(mockStep)
         every { componentService.getComponentById(uuid) } returns mockComponent
         every { componentService.addComponentStep(uuid, StepDTO(mockStep)) } returns mockComponentWithAddedStep
-        mockMvc.perform(
-            post("/api/components/$uuid/steps")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getMockStepJson()),
-        )
-            .andExpect(status().isCreated)
+        mockMvc
+            .perform(
+                post("/api/components/$uuid/steps")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(getMockStepJson()),
+            ).andExpect(status().isCreated)
             .andExpect(content().json(getMockStepListNewJson()))
     }
 }

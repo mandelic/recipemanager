@@ -31,10 +31,10 @@ class StepIngredientController {
     @WithMockUser(username = "user", roles = ["USER"])
     fun `when delete ingredient by valid user, return 204`() {
         every { stepIngredientService.deleteIngredientById(uuid) } just Runs
-        mockMvc.perform(
-            delete("/api/ingredients/$uuid"),
-        )
-            .andExpect(status().isNoContent)
+        mockMvc
+            .perform(
+                delete("/api/ingredients/$uuid"),
+            ).andExpect(status().isNoContent)
             .andExpect(content().string(""))
     }
 
@@ -42,10 +42,10 @@ class StepIngredientController {
     @WithMockUser(username = "user", roles = ["USER"])
     fun `when delete step by valid user, return 204`() {
         every { stepIngredientService.deleteStepById(uuid) } just Runs
-        mockMvc.perform(
-            delete("/api/steps/$uuid"),
-        )
-            .andExpect(status().isNoContent)
+        mockMvc
+            .perform(
+                delete("/api/steps/$uuid"),
+            ).andExpect(status().isNoContent)
             .andExpect(content().string(""))
     }
 }

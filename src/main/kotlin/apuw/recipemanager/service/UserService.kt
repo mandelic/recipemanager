@@ -15,7 +15,6 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class UserService(
@@ -72,15 +71,15 @@ class UserService(
         role: String,
     ): String {
         val grantedAuthorities: List<GrantedAuthority> = AuthorityUtils.commaSeparatedStringToAuthorityList(role)
-        return Jwts.builder()
+        return Jwts
+            .builder()
             .id("recipesManagerJWT")
             .subject(userId.toString())
             .claim(
                 "authorities",
                 grantedAuthorities
                     .map { it.authority },
-            )
-            .issuedAt(Date(System.currentTimeMillis()))
+            ).issuedAt(Date(System.currentTimeMillis()))
             .expiration(Date(System.currentTimeMillis() + 3600000))
             .signWith(Keys.hmacShaKeyFor(jwtSecret.toByteArray()))
             .compact()

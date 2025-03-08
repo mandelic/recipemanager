@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api")
 @RestController
 @Tag(name = "Authentication", description = "User authentication")
-class AuthController(private val userService: UserService) {
+class AuthController(
+    private val userService: UserService,
+) {
     @Operation(
         summary = "Login",
         description = "Validates the username and password, and returns a valid JWT token if they match.",

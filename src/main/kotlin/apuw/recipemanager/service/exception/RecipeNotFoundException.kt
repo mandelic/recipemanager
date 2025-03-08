@@ -1,5 +1,7 @@
 package apuw.recipemanager.service.exception
 
-import java.util.*
+import java.util.UUID
 
-class RecipeNotFoundException(id: UUID) : RuntimeException("Recipe with id $id was not found")
+class RecipeNotFoundException(
+    id: UUID,
+) : RuntimeException("Recipe with id $id was not found")

@@ -96,9 +96,13 @@ class RecipeControllerTest {
 
         mockRecipe =
             Recipe(
-                uuid, "", "",
+                uuid,
+                "",
+                "",
                 LocalDateTime.of(2024, 12, 18, 22, 0, 4),
-                LocalDateTime.of(2024, 12, 18, 22, 0, 4), mutableListOf(), mockUser,
+                LocalDateTime.of(2024, 12, 18, 22, 0, 4),
+                mutableListOf(),
+                mockUser,
             )
 
         mockComponent = Component(uuid, "", mockRecipe, mutableListOf(), mutableListOf())
@@ -116,7 +120,8 @@ class RecipeControllerTest {
     @WithMockUser(username = "user", roles = ["USER"])
     fun `when get all recipes return all recipes`() {
         every { recipeService.getAllRecipes() } returns mockRecipeList
-        mockMvc.perform(get("/api/recipes"))
+        mockMvc
+            .perform(get("/api/recipes"))
             .andExpect(status().isOk)
             .andExpect(content().json(getMockRecipeJson()))
     }
@@ -124,11 +129,12 @@ class RecipeControllerTest {
     @Test
     fun `when add new recipe return 201`() {
         every { recipeService.save(mockRecipeDetailsDTO) } returns mockRecipe
-        mockMvc.perform(
-            post("/api/recipes")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getMockRecipeDetailsJson()),
-        ).andExpect(status().isCreated)
+        mockMvc
+            .perform(
+                post("/api/recipes")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(getMockRecipeDetailsJson()),
+            ).andExpect(status().isCreated)
             .andExpect(content().string(uuid.toString()))
     }
 
@@ -136,7 +142,8 @@ class RecipeControllerTest {
     @WithMockUser(username = "user", roles = ["USER"])
     fun `when get recipe by valid id, return it`() {
         every { recipeService.getRecipeById(uuid) } returns mockRecipe
-        mockMvc.perform(get("/api/recipes/$uuid"))
+        mockMvc
+            .perform(get("/api/recipes/$uuid"))
             .andExpect(status().isOk)
             .andExpect(content().json(getMockRecipeDetailsJson()))
     }
@@ -145,7 +152,8 @@ class RecipeControllerTest {
     @WithMockUser(username = "user", roles = ["USER"])
     fun `when get recipe by invalid id, throw RecipeNotFoundException`() {
         every { recipeService.getRecipeById(uuid) } throws RecipeNotFoundException(uuid)
-        mockMvc.perform(get("/api/recipes/$uuid"))
+        mockMvc
+            .perform(get("/api/recipes/$uuid"))
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.message").value("Recipe with id $uuid was not found"))
     }
@@ -155,7 +163,8 @@ class RecipeControllerTest {
     fun `when delete recipe with role admin, return 204`() {
         every { recipeService.getRecipeById(uuid) } returns mockRecipe
         every { recipeService.delete(uuid) } just Runs
-        mockMvc.perform(delete("/api/recipes/$uuid"))
+        mockMvc
+            .perform(delete("/api/recipes/$uuid"))
             .andExpect(status().isNoContent)
             .andExpect(content().string(""))
     }
@@ -165,11 +174,12 @@ class RecipeControllerTest {
     fun `when update recipe by valid user, return 200`() {
         every { recipeService.getRecipeById(uuid) } returns mockRecipe
         every { recipeService.update(uuid, mockRecipeDetailsDTO) } returns mockRecipe
-        mockMvc.perform(
-            put("/api/recipes/$uuid")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getMockRecipeDetailsJson()),
-        ).andExpect(status().isOk)
+        mockMvc
+            .perform(
+                put("/api/recipes/$uuid")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(getMockRecipeDetailsJson()),
+            ).andExpect(status().isOk)
             .andExpect(content().json(getMockRecipeDetailsJson()))
     }
 
@@ -178,11 +188,12 @@ class RecipeControllerTest {
     fun `when update recipe by invalid user, return 403`() {
         every { recipeService.getRecipeById(uuid) } returns mockRecipe
         every { recipeService.update(uuid, mockRecipeDetailsDTO) } throws AccessDeniedCustomException()
-        mockMvc.perform(
-            put("/api/recipes/$uuid")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getMockRecipeDetailsJson()),
-        ).andExpect(status().isForbidden)
+        mockMvc
+            .perform(
+                put("/api/recipes/$uuid")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(getMockRecipeDetailsJson()),
+            ).andExpect(status().isForbidden)
             .andExpect(jsonPath("$.message").value("Access denied"))
     }
 
@@ -190,7 +201,8 @@ class RecipeControllerTest {
     @WithMockUser(username = "user", roles = ["USER"])
     fun `when get recipe components, return them`() {
         every { recipeService.getRecipeById(uuid) } returns mockRecipe
-        mockMvc.perform(get("/api/recipes/$uuid/components"))
+        mockMvc
+            .perform(get("/api/recipes/$uuid/components"))
             .andExpect(status().isOk)
             .andExpect(content().json(getMockComponentListJson()))
     }
@@ -202,12 +214,12 @@ class RecipeControllerTest {
         mockRecipeWithAddedComponent.components.add(otherMockComponent)
         every { recipeService.getRecipeById(uuid) } returns mockRecipe
         every { recipeService.addRecipeComponent(uuid, ComponentDTO(otherMockComponent)) } returns mockRecipeWithAddedComponent
-        mockMvc.perform(
-            post("/api/recipes/$uuid/components")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getMockComponentJson()),
-        )
-            .andExpect(status().isCreated)
+        mockMvc
+            .perform(
+                post("/api/recipes/$uuid/components")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(getMockComponentJson()),
+            ).andExpect(status().isCreated)
             .andExpect(content().json(getMockComponentAddedListJson()))
     }
 }

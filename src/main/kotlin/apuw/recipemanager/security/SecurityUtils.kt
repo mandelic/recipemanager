@@ -5,10 +5,11 @@ import apuw.recipemanager.repository.UserRepository
 import apuw.recipemanager.service.exception.AccessDeniedCustomException
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
-class SecurityUtils(private val userRepository: UserRepository) {
+class SecurityUtils(
+    private val userRepository: UserRepository,
+) {
     fun getCurrentUser(): User {
         val authentication = SecurityContextHolder.getContext().authentication
         return userRepository.findById(UUID.fromString(authentication.name)).orElseThrow {

@@ -2,7 +2,7 @@ package apuw.recipemanager.controller.dto
 
 import apuw.recipemanager.entity.Recipe
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 data class RecipeDetailsDTO(
     var id: UUID?,

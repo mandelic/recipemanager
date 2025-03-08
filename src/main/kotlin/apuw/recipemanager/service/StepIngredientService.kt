@@ -4,7 +4,7 @@ import apuw.recipemanager.repository.IngredientRepository
 import apuw.recipemanager.repository.StepRepository
 import apuw.recipemanager.security.SecurityUtils
 import org.springframework.stereotype.Service
-import java.util.*
+import java.util.UUID
 
 @Service
 class StepIngredientService(

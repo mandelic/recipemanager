@@ -56,9 +56,13 @@ class RecipeServiceTest {
 
         mockRecipe =
             Recipe(
-                uuid, "", "",
+                uuid,
+                "",
+                "",
                 LocalDateTime.of(2024, 12, 18, 22, 0, 4),
-                LocalDateTime.of(2024, 12, 18, 22, 0, 4), mutableListOf(), mockUser,
+                LocalDateTime.of(2024, 12, 18, 22, 0, 4),
+                mutableListOf(),
+                mockUser,
             )
 
         mockComponent = Component(uuid, "", mockRecipe, mutableListOf(), mutableListOf())

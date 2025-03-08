@@ -50,7 +50,8 @@ class JwtAuthFilter : OncePerRequestFilter() {
 
     private fun getAllClaimsFromToken(authorizationHeader: String): Claims {
         val jwtToken = authorizationHeader.replace("Bearer ", "")
-        return Jwts.parser()
+        return Jwts
+            .parser()
             .verifyWith(Keys.hmacShaKeyFor(jwtSecret.toByteArray()))
             .build()
             .parseSignedClaims(jwtToken)

@@ -7,8 +7,13 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.*
-import java.util.*
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
 
 @PreAuthorize("hasRole('ADMIN')")
 @RequestMapping(USERS_PATH)
@@ -19,7 +24,9 @@ import java.util.*
         "Endpoints for managing user accounts, including retrieving, updating," +
             "and deleting user information.",
 )
-class UserController(private val userService: UserService) {
+class UserController(
+    private val userService: UserService,
+) {
     @Operation(
         summary = "Get All Users",
         description = "Retrieves a list of all users in the system. Only available to users with ROLE_ADMIN.",
@@ -40,9 +47,7 @@ class UserController(private val userService: UserService) {
     @GetMapping("/{id}")
     fun findUserById(
         @PathVariable id: UUID,
-    ): ResponseEntity<UserDTO> {
-        return ResponseEntity.ok(UserDTO(userService.getUserById(id)))
-    }
+    ): ResponseEntity<UserDTO> = ResponseEntity.ok(UserDTO(userService.getUserById(id)))
 
     @Operation(
         summary = "Update User by ID",

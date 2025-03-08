@@ -1,7 +1,7 @@
 package apuw.recipemanager.controller.dto
 
 import apuw.recipemanager.entity.Step
-import java.util.*
+import java.util.UUID
 
 data class StepDTO(
     val id: UUID?,

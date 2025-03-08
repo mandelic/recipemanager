@@ -58,12 +58,12 @@ class AuthControllerTest {
         every { userService.verifyLogin(mockLoginRequest) } returns mockAdminToken
         every { userService.getJwtToken(mockAdminToken.userId, mockAdminToken.role) } returns "token"
         every { userRepository.findByUsername("admin") } returns Optional.of(mockUserList[0])
-        mockMvc.perform(
-            post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getMockLoginRequestJson()),
-        )
-            .andExpect(status().isOk)
+        mockMvc
+            .perform(
+                post("/api/auth/login")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(getMockLoginRequestJson()),
+            ).andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(content().json(getMockAdminTokenJson()))
     }
@@ -72,12 +72,12 @@ class AuthControllerTest {
     fun `when login not verified return access denied`() {
         every { userService.verifyLogin(mockLoginRequest) } returns null
         every { userRepository.findByUsername("admin") } returns Optional.empty()
-        mockMvc.perform(
-            post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getMockLoginRequestJson()),
-        )
-            .andExpect(status().isUnauthorized)
+        mockMvc
+            .perform(
+                post("/api/auth/login")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(getMockLoginRequestJson()),
+            ).andExpect(status().isUnauthorized)
             .andExpect(content().string(""))
     }
 
@@ -86,12 +86,12 @@ class AuthControllerTest {
         every { userService.addUser(mockLoginRequest) } returns mockUserList[0]
         every { userService.getJwtToken(mockAdminToken.userId, mockAdminToken.role) } returns "token"
         every { userRepository.save(mockUserList[0]) } returns mockUserList[0]
-        mockMvc.perform(
-            post("/api/auth/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getMockLoginRequestJson()),
-        )
-            .andExpect(status().isCreated)
+        mockMvc
+            .perform(
+                post("/api/auth/register")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(getMockLoginRequestJson()),
+            ).andExpect(status().isCreated)
             .andExpect(content().contentType(MediaType.valueOf("text/plain;charset=UTF-8")))
             .andExpect(content().string(mockUserList[0].id.toString()))
     }

@@ -8,9 +8,15 @@ import apuw.recipemanager.util.Paths.COMPONENTS_PATH
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 import java.net.URI
-import java.util.*
+import java.util.UUID
 
 @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 @RequestMapping(COMPONENTS_PATH)
@@ -21,7 +27,9 @@ import java.util.*
         "APIs for managing recipe components, including CRUD operations for components," +
             "as well as handling steps and ingredients associated with each component.",
 )
-class ComponentController(val componentService: ComponentService) {
+class ComponentController(
+    val componentService: ComponentService,
+) {
     @PutMapping("/{id}")
     fun updateComponent(
         @PathVariable id: UUID,
@@ -53,9 +61,10 @@ class ComponentController(val componentService: ComponentService) {
         @RequestBody ingredientDTO: IngredientDTO,
     ): ResponseEntity<List<IngredientDTO>> {
         val updatedComponent = componentService.addComponentIngredient(id, ingredientDTO)
-        return ResponseEntity.created(
-            URI.create("/api/components/$id/ingredients"),
-        ).body(updatedComponent.ingredients.map { IngredientDTO(it) })
+        return ResponseEntity
+            .created(
+                URI.create("/api/components/$id/ingredients"),
+            ).body(updatedComponent.ingredients.map { IngredientDTO(it) })
     }
 
     @GetMapping("/{id}/steps")

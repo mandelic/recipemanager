@@ -9,7 +9,7 @@ import apuw.recipemanager.security.SecurityUtils
 import apuw.recipemanager.service.exception.RecipeNotFoundException
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 @Service
 class RecipeService(
